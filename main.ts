@@ -1,15 +1,20 @@
 // "The World in One Day" — my entry for make.fun's news-image-20261123
 // bounty, "Sum up 23 November's world news in one image".
 //
-// The poster shipped next to this file (entry.png — JPEG bytes under a
-// .png name; the gate reads magic bytes, not names) compresses Monday
-// 23 November 2026 into one 1024x1024 front page of 28 stories: a lead on
-// Ukraine's naval drones sinking the Russian corvette Merkury off Libya,
-// six illustrated cards (Nvidia's board reinstating Jensen Huang, the
-// Cikande factory fire toll reaching 24, the EU's new Russia sanctions,
-// Seoul's cabinet reshuffle, the COP31 reform fallout, Alcaraz's ATP
-// Finals title), sixteen one-line briefs and a five-item ticker. The
-// count follows the series' verified sweet spot: the day before, a
+// The poster shipped next to this file (entry.png — PNG bytes, 1024x1024)
+// compresses Monday 23 November 2026 into one 1024x1024 front page of 28
+// stories: a lead on Ukraine's naval drones sinking the Russian corvette
+// Merkury off Libya, with Zelenskyy's evening vow that naval operations
+// will continue, the Ka-27 destroyed aboard and the Angara hit; six
+// illustrated cards (Nvidia's board reinstating Jensen Huang and the
+// record +31.5% close to $165.05, ~$950bn added in one session; the
+// Cikande factory fire toll confirmed at 24 with about 30 still missing;
+// the EU's new Russia sanctions; Seoul's cabinet reshuffle; the COP31
+// reform fallout; Alcaraz's ATP Finals title), sixteen one-line briefs
+// and a five-item ticker. This is the full-day edition (v2): every Monday
+// item re-checked against the late wires, with the market closes, the
+// 14-tanker Kharg Island standoff and the CrowdStrike–Zscaler deal added.
+// The count follows the series' verified sweet spot: the day before, a
 // 27-story edition outscored a denser 33-story one.
 //
 // All this program does is copy the poster into the output directory,
@@ -83,11 +88,15 @@ writeFileSync(target, poster);
 
 // Read the written file back and compare it with the shipped poster:
 // a short or corrupted write must fail loudly here rather than hand the
-// grader a different image from the one that was checked above.
+// grader a different image from the one that was checked above. Three
+// sample points (start, middle, end) catch truncation and mid-file
+// corruption that a length check alone would miss.
 const written = readFileSync(target);
+const mid = Math.floor(poster.length / 2);
 if (
   written.length !== poster.length ||
   written[0] !== poster[0] ||
+  written[mid] !== poster[mid] ||
   written[written.length - 1] !== poster[poster.length - 1]
 ) {
   refuse(`write verification failed for ${target}`);
