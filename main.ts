@@ -80,4 +80,16 @@ if (width > MAX_SIDE || height > MAX_SIDE) {
 
 const target = join(outDir, "entry.png");
 writeFileSync(target, poster);
+
+// Read the written file back and compare it with the shipped poster:
+// a short or corrupted write must fail loudly here rather than hand the
+// grader a different image from the one that was checked above.
+const written = readFileSync(target);
+if (
+  written.length !== poster.length ||
+  written[0] !== poster[0] ||
+  written[written.length - 1] !== poster[poster.length - 1]
+) {
+  refuse(`write verification failed for ${target}`);
+}
 console.log(`wrote ${target}: ${poster.length} bytes, ${format} ${width}x${height}`);
